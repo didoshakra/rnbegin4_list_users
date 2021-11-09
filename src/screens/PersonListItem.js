@@ -2,26 +2,25 @@
 import React, {Component} from 'react';
 import {StyleSheet, TouchableOpacity, Image, Text, View} from 'react-native';
 
-export class PersonListItem extends Component {
-  render = () => {
-    const {onPress, person} = this.props;
 
-    return (
-      <TouchableOpacity style={styles.container} onPress={onPress}>
-        <Image
-          source={{uri: person.picture.medium}}
-          resizeMode={'contain'}
-          style={styles.avatar}
-        />
-        <View style={styles.col}>
-          <Text style={styles.name}>
-            {person.name.first} {person.name.last}
-          </Text>
-          <Text style={styles.email}>{person.email}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+export function PersonListItem({onPress, person}) {
+  // const {onPress, person} = props;
+
+  return (
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <Image
+        source={{uri: person.picture.medium}}
+        resizeMode={'contain'}
+        style={styles.avatar}
+      />
+      <View style={styles.col}>
+        <Text style={styles.name}>
+          {person.name.first} {person.name.last}
+        </Text>
+        <Text style={styles.email}>{person.email}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({

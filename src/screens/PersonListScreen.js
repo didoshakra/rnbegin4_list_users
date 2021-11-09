@@ -1,84 +1,78 @@
 //PersonListScreen.js
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, View, StyleSheet, FlatList} from 'react-native';
 import {PersonListItem} from './PersonListItem';
 
-export class PersonListScreen extends Component {
-  state = {
-    list: [],
-    isLoading: false,
-  };
+export const PersonListScreen = ({navigation}) => {
+  const [list, setList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  componentDidMount = () => {
-    console.log('componentDidMount');
-    this.onRefresh();
-  };
+  // componentDidMount = () => {
+  //   console.log('componentDidMount');
+  //   this.onRefresh();
+  // };
+  useEffect(() => {
+    onRefresh();
+  }, []);
 
-  getMoreData = isRefreshing => {
+  const getMoreData = isRefreshing => {
     const limit = 15;
-    const offset = isRefreshing ? 0 : this.state.list.length;
+    const offset = isRefreshing ? 0 : list.length;
     const page = Math.ceil(offset / limit) + 1;
     fetch(`https://randomuser.me/api/?seed=foobar&results=15&page=${page}`)
       .then(r => r.json())
       .then(json => {
-        this.setState({
-          list: isRefreshing
-            ? this.state.list.concat(json.results)
-            : json.results,
-        });
+        setList(isRefreshing ? list.concat(json.results) : json.results);
+        // setList(json.results);
+        // console.log('list=', list);
       })
       .catch(e => {
         console.log(e);
       });
   };
 
-  onRefresh = () => {
-    this.getMoreData(true);
+  const onRefresh = () => {
+    getMoreData(true);
   };
 
-  onScrollToEnd = ({distanceFromEnd}) => {
+  const onScrollToEnd = ({distanceFromEnd}) => {
     if (distanceFromEnd < 0) {
       return;
     }
-    this.getMoreData(false);
+    getMoreData(false);
   };
 
-  onItemPress = item => {
-    this.props.navigation.navigate('info', {person: item});
+  const onItemPress = item => {
+    navigation.navigate('info', {person: item});
   };
 
-  keyExtractor = person => person.login.uuid;
+  const keyExtractor = person => person.login.uuid;
 
-
-
-  renderItem = ({item}) => {
-    return (
-      <PersonListItem
-        person={item}
-        onPress={this.onItemPress.bind(this, item)}
-      />
-    );
+  const renderItem = ({item}) => {
+    // return <PersonListItem person={item} onPress={onItemPress(item)} />-зразу спрацьовувало;
+    return <PersonListItem person={item} onPress={() => onItemPress(item)} />;
+    // return <PersonListItem person={item} />;
   };
-  render() {
-    const {isLoading, list} = this.state;
-    return (
+  // const {isLoading, list} = this.state;
+  return (
+    <View>
+      <Text style={{textAlign: 'center', fontSize: 22, color: 'red'}}>
+        PersonListScreen-function
+      </Text>
       <View>
-        <Text style={{textAlign:'center', fontSize: 22, color: 'red'}}>PersonListScreen</Text>
-        <View>
-          <FlatList
-            data={list}
-            renderItem={this.renderItem}
-            keyExtractor={this.keyExtractor}
-            refreshing={isLoading}
-            onRefresh={this.onRefresh}
-            onEndReached={this.onScrollToEnd}
-            onEndReachedThreshold={0.2}
-          />
-        </View>
+        <FlatList
+          data={list}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          refreshing={isLoading}
+          // onRefresh={onRefresh}
+          onEndReached={onScrollToEnd}
+          onEndReachedThreshold={0.2}
+        />
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
