@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Text, View, StyleSheet, FlatList} from 'react-native';
 import {PersonListItem} from './PersonListItem';
 
-export default class PersonListScreen extends Component {
+export class PersonListScreen extends Component {
   state = {
     list: [],
     isLoading: false,
@@ -49,23 +49,7 @@ export default class PersonListScreen extends Component {
 
   keyExtractor = person => person.login.uuid;
 
-  getMoreData = isRefreshing => {
-    const limit = 15;
-    const offset = isRefreshing ? 0 : this.state.list.length;
-    const page = Math.ceil(offset / limit) + 1;
-    fetch(`https://randomuser.me/api/?seed=foobar&results=15&page=${page}`)
-      .then(r => r.json())
-      .then(json => {
-        this.setState({
-          list: isRefreshing
-            ? this.state.list.concat(json.results)
-            : json.results,
-        });
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
+
 
   renderItem = ({item}) => {
     return (
@@ -79,7 +63,7 @@ export default class PersonListScreen extends Component {
     const {isLoading, list} = this.state;
     return (
       <View>
-        <Text style={{fontSize: 22, color: 'red'}}>PersonListScreen</Text>
+        <Text style={{textAlign:'center', fontSize: 22, color: 'red'}}>PersonListScreen</Text>
         <View>
           <FlatList
             data={list}

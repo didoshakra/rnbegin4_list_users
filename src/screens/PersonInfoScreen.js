@@ -6,7 +6,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
 
-export default class PersonInfoScreen extends Component {
+export class PersonInfoScreen extends Component {
   renderRow = cells => {
     return cells.map(cell => (
       <View style={styles.cell} key={cell.title}>
